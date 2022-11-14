@@ -310,7 +310,7 @@ export const AuthProvider = (props) => {
       isLoggedIn: true,
       name: "Anumudu",
       email: "anumuduchukwuebuka@gmail.com",
-      role: "admin",
+      role: "user",
     });
     navigate("/");
   };
