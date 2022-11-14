@@ -64,7 +64,7 @@ export default Products;
 //style for product section
 const ProductSection = Styled.div`
 width: 100%;
-padding: 20px;
+// padding: 5px;
 border-left: 2px solid #e3e3e3;
 `;
 
@@ -93,6 +93,7 @@ const ProductItems = Styled.div`
  justify-content: center;
  align-items: center;
  gap: 50px;
+ padding: 5px;
 //  column-gap: 8px;
 `;
 
