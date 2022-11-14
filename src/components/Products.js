@@ -102,7 +102,7 @@ position: relative;
 padding: 5px;
 width: 250px;
 max-width: 250px;
-height: 370px;
+// height: 370px;
 border-radius: 5px;
 box-shadow: 0px 0px 10px #ccc;
 overflow: hidden;
@@ -114,10 +114,20 @@ color: #555;
   text-align: center;
   padding: 5px 0;
   color: rgb(0, 108, 151);
+  @media screen and (max-width:568px) {
+    & {
+      font-size: .9rem;
+    }
+  }
 }
 @media screen and (max-width:786px) {
   & {
     width: 80%;
+  }
+}
+@media screen and (max-width:568px) {
+  & {
+    width: 100%;
   }
 }
 `;
@@ -137,11 +147,21 @@ const ProductItemImg = Styled.img`
   &:hover {
     animation-iteration-count: 0;
 }
+@media screen and (max-width:568px) {
+  & {
+    height: 150px;
+  }
+}
 `;
 //style for product ITEM CATEGORY
 const ProductCategory = Styled.p`
 font-size: 1.1rem;
 padding: 2px 0;
+@media screen and (max-width:568px) {
+  & {
+    font-size: .9rem;
+  }
+}
 `;
 
 //style for product ITEM TITLE
@@ -149,12 +169,22 @@ const ProductItemTitle = Styled.p`
 font-size: 1.1rem;
 padding: 2px 0;
 margin: 5px 0;
+@media screen and (max-width:568px) {
+  & {
+    font-size: .9rem;
+  }
+}
 `;
 
 //style for product ITEM PRICE
 const ProductPrice = Styled.p`
 font-size: 1.1rem;
 padding: 2px 0;
+@media screen and (max-width:568px) {
+  & {
+    font-size: .9rem;
+  }
+}
 `;
 
 //style for product ITEM IMAGE
@@ -168,6 +198,11 @@ border: none;
 outline: none;
 font-size: 1.2rem;
 cursor: ${({ disabled }) => (disabled ? "auto" : "pointer")};
+@media screen and (max-width:568px) {
+  & {
+    font-size: .9rem;
+  }
+}
 `;
 
 //style for sold element
@@ -183,6 +218,11 @@ border-bottom-left-radius: 50px;
  color: #fff;
  font-weight: 700;
  font-size: 1rem;
+ @media screen and (max-width:568px) {
+  & {
+    font-size: .9rem;
+  }
+}
 `;
 
 //Style for delate and edit product
