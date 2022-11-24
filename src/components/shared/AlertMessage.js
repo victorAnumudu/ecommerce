@@ -2,19 +2,23 @@ import React from "react";
 import Styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import { Authenticate } from "../../Goods";
+import { Authenticate } from "../../ContextProvider";
 
-const AlertMessage = () => {
+const AlertMessage = ({ message, color }) => {
   let { setAlertMessage } = Authenticate();
 
   let removeAlertDisplay = (e) => {
-    e.preventDefault();
-    setAlertMessage(false);
+    // e.preventDefault();
+    setAlertMessage({
+      show: false,
+      message: "",
+      color: "red",
+    });
   };
   return (
     <Alert>
       <Message>
-        Opps! Item Already in Cart
+        {message}
         <Link to="/" onClick={removeAlertDisplay}>
           Back
         </Link>
@@ -51,11 +55,10 @@ position: absolute;
 top: 20px;
 left: 50%;
 transform: translate(-50%, 0%);
-color: #222;
 box-shadow: 0px 0px 10px #999;
 border-radius: 10px;
 font-size: 18px;
-  color: darkred;
+color: ${({ color }) => (color ? color : "darkred")};
 
 animation: dropdown;
 animation-duration: .5s;
@@ -72,9 +75,9 @@ animation-timing-function: linear;
 }
 
 @keyframes dropdown {
-    0%{top: -100%}
-    50%{top: 20%}
-    75%{top: -20%}
-    100{top: 0}
+    0%{top: -100%};
+    50%{top: 20%};
+    75%{top: -20%};
+    100{top: 0};
 }
 `;

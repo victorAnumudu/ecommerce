@@ -1,0 +1,15 @@
+remember to add appropriate file to gitingore
+make cart in the mobile view to close the navbar
+import react in all components
+bring out the cart from nav bar on mobile view
+user can delete his account and all relevent info from database
+
+validate password and confirm password field
+
+sort product to show last added first on the page
+
+change where shop now takes one to
+
+clean all useeffect ooooo (e pepper me too much)
+
+view orders as table and be able to view each order seperately

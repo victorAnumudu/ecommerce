@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 
 import Styled from "styled-components";
 
-import { Authenticate } from "../Goods";
+import { Authenticate } from "../ContextProvider";
 import { Link, useParams, useNavigate } from "react-router-dom";
+
+import { LoadingPage, FailedPage } from "../components/shared/LoadingPage";
+
+import apiUrl from "../config";
 
 const ProductPage = () => {
   let navigate = useNavigate();
@@ -11,68 +15,113 @@ const ProductPage = () => {
 
   let { allProducts, addToCart, userDetails } = Authenticate();
 
-  let [productDetails, setProductDetails] = useState({});
+  let [productDetails, setProductDetails] = useState([]);
+
+  let [pageIsLoading, setPageIsLoading] = useState({
+    loading: true,
+    failed: false,
+    success: false,
+  });
 
   useEffect(() => {
-    let selectedProduct = allProducts.find((item) => item.id == product_id); // finding the all products to get specified product clicked by user
-    setProductDetails((prev) => ({ ...prev, ...selectedProduct }));
-    return () => setProductDetails({});
-  }, [allProducts, product_id]);
+    fetch(`${apiUrl}/product/${product_id}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.status) {
+          setTimeout(() => {
+            setPageIsLoading({
+              loading: false,
+              failed: true,
+              success: false,
+            });
+          }, 500);
+          return setProductDetails([]);
+        }
+        // IF REQUEST IS SUCCESSFUL
+        setTimeout(() => {
+          setPageIsLoading({
+            loading: false,
+            failed: false,
+            success: true,
+          });
+          setProductDetails([data.message]);
+        }, 100);
+      })
+      .catch((err) => {
+        setTimeout(() => {
+          setPageIsLoading({
+            loading: false,
+            failed: true,
+            success: false,
+          });
+          setProductDetails([]);
+        }, 500);
+      });
+  }, [product_id]);
 
   // function to handle adding item to cart
   const handleAddToCart = (product) => {
     let itemToAddToCart = {
-      id: product.id,
+      id: product._id,
       category: product.category,
       title: product.title,
       price: product.price,
-      image: product.image,
+      image: product.image.data,
       quantity: 0,
     };
     addToCart(itemToAddToCart);
   };
-  return (
-    <Section>
-      <Link to="/">Back to Shopping</Link>
-      <Product>
-        <ImageCon>
-          {userDetails.role === "admin" && (
-            <Action>
-              <i
-                onClick={() => navigate(`/admin/delete/${product_id}`)}
-                className="fa-solid fa-trash delete"
-              ></i>
-              <i
-                onClick={() => navigate(`/admin/edit/${product_id}`)}
-                className="fa-solid fa-pen-to-square edit"
-              ></i>
-            </Action>
-          )}
-          <ProductImg src={productDetails.image} alt="product" />
-        </ImageCon>
+  return pageIsLoading.success ? (
+    productDetails.map((product) => (
+      <Section key={product._id}>
+        <Link to="/">Back to Shopping</Link>
+        <Product>
+          <ImageCon>
+            {userDetails.role === "admin" && (
+              <Action>
+                <i
+                  onClick={() => navigate(`/admin/delete/${product_id}`)}
+                  className="fa-solid fa-trash delete"
+                ></i>
+                <i
+                  onClick={() => navigate(`/admin/edit/${product_id}`)}
+                  className="fa-solid fa-pen-to-square edit"
+                ></i>
+              </Action>
+            )}
+            <ProductImg src={product.image.data || ""} alt="product" />
+          </ImageCon>
 
-        <DetailGroups>
-          <DetailGroup>
-            <p>Title:</p>
-            <p>{productDetails.title}</p>
-          </DetailGroup>
+          <DetailGroups>
+            <DetailGroup>
+              <p>Title:</p>
+              <p>{product.title}</p>
+            </DetailGroup>
 
-          <DetailGroup>
-            <p>Description:</p>
-            <p>{productDetails.description}</p>
-          </DetailGroup>
+            <DetailGroup>
+              <p>Description:</p>
+              <p>{product.description}</p>
+            </DetailGroup>
 
-          <DetailGroup>
-            <p>Price:</p>
-            <p>${productDetails.price}</p>
-          </DetailGroup>
+            <DetailGroup>
+              <p>Price:</p>
+              <p>&#8358;{product.price}</p>
+            </DetailGroup>
 
-          <Button onClick={() => handleAddToCart(productDetails)}>
-            Add to cart
-          </Button>
-        </DetailGroups>
-      </Product>
-    </Section>
+            <Button onClick={() => handleAddToCart(product)}>
+              Add to cart
+            </Button>
+          </DetailGroups>
+        </Product>
+      </Section>
+    ))
+  ) : (
+    <>
+      {pageIsLoading.loading && <LoadingPage />}
+      {pageIsLoading.failed && <FailedPage />}
+    </>
   );
 };
 
@@ -80,6 +129,7 @@ export default ProductPage;
 
 const Section = Styled.div`
 background-color: rgba(0,0,0,0.015);
+min-height: 700px;
 & a {
   display: block;
   position: sticky;

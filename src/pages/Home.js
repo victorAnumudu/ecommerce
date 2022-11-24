@@ -6,7 +6,6 @@ import Main from "../components/Main";
 import Aside from "../components/Aside";
 import Products from "../components/Products";
 
-
 const Home = () => {
   return (
     <>

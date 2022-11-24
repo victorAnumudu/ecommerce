@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Styled from "styled-components";
-import { Authenticate } from "../Goods";
+import { Authenticate } from "../ContextProvider";
 
 import AnchorLink from "../components/Link"; // Link back to home page
 
@@ -24,8 +24,9 @@ import {
 
 const AdminEditProduct = () => {
   let { handleEditProduct, allProducts } = Authenticate();
-
+ 
   let productId = useParams().pid;
+  console.log(productId)
 
   let [product, setProduct] = useState({});
   let [img, setImg] = useState("");
@@ -47,9 +48,9 @@ const AdminEditProduct = () => {
   };
 
   let handleOnSubmit = (e) => {
-    e.preventDefault()
-    handleEditProduct(product)
-  }
+    e.preventDefault();
+    handleEditProduct(product);
+  };
 
   // values for category of products
   const categories = [
@@ -61,6 +62,7 @@ const AdminEditProduct = () => {
     { name: "Watches" },
   ];
   return (
+
     <FormContainer>
       <AnchorLink />
       <FormWrapper>

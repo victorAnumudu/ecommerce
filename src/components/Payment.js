@@ -1,83 +1,178 @@
-import React from "react";
+import React, { useState, useRef } from "react";
+
+import { PaystackButton } from "react-paystack"; // PAYSTACK BUTTON TO ACTIVATE PAYSTACK
+import { PaystackPublicKey } from "../config";
+import "../styles/paystack_button.css";
+
 import Styled from "styled-components";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import SpinnerStyle from "../styles/SpinnerStyle";
 
-import { Authenticate } from "../Goods";
+import { Authenticate } from "../ContextProvider";
 
-const Payment = ({ totalPrice }) => {
-  let navigate = useNavigate();
+import apiUrl from "../config";
 
-  let { cart, setCart, userDetails } = Authenticate();
+const Payment = (/*{ totalPrice, setShowPayment }*/) => {
+  let { cart, setCart, userDetails, setAlertMessage } = Authenticate();
+  // let navigate = useNavigate();
 
-  // function to handle payment
-  let handlePayment = (e) => {
-    e.preventDefault();
-    let message = document.querySelector(".msg");
-    message.textContent = "Successfully";
-    message.style.color = "darkgreen";
+  let message = useRef(); // message element for sending sending success or failure message to user
+  let [spinner, setSpinner] = useState(false); // spinner element
 
-    let spinner = document.getElementById("rotate");
-    spinner.style.display = "block";
-    setTimeout(() => {
-      spinner.style.display = "none";
+  //function to get total price of item user bought
+  let totalPrice = () => {
+    let total = cart.reduce((sum, item) => {
+      return sum + item.quantity * item.price;
+    }, 0);
+    return total;
+  };
 
-      // add to order local storage
-      if (localStorage.getItem("orders")) {
-        let oldOrderRecord = JSON.parse(localStorage.getItem("orders"));
-        let newOrder = {
-          id: userDetails.email,
-          totalAmount: totalPrice,
-          order: cart,
-        };
-        let newOrderRecord = [...oldOrderRecord, newOrder];
-        localStorage.setItem("orders", JSON.stringify(newOrderRecord));
-      } else {
-        //set orders storage in localstorage
-        let newOrder = {
-          id: userDetails.email,
-          totalAmount: totalPrice,
-          order: cart,
-        };
-        localStorage.setItem("orders", JSON.stringify([newOrder]));
+  //FUNCTION TO ADD ORDER DETAILS TO ORDER TABLE
+  let handlePayment = async (e) => {
+    setSpinner(true);
+    let paymentType = "";
+    if (e && e.target.name === "cash") {
+      paymentType = "pay on delivery";
+    } else {
+      paymentType = "card";
+    }
+
+    try {
+      let orderDetails = {
+        email: userDetails.email,
+        cart,
+        totalAmount: totalPrice(),
+        paymentType,
+        paymentStatus: paymentType === "card" ? "paid" : "not paid",
+      };
+
+      let res = await fetch(`${apiUrl}/user/order`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+        body: JSON.stringify(orderDetails),
+      });
+      let data = await res.json();
+
+      // if request fails
+      if (!data.status) {
+        message.current.style.color = "red";
+        message.current.textContent = data.message;
+        setTimeout(() => {
+          setSpinner(false);
+          // setShowPayment(false);
+          setAlertMessage({
+            show: false,
+            message: data.message,
+            color: "red",
+          });
+        }, 500);
       }
+      message.current.style.color = "darkgreen";
+      message.current.textContent = data.message;
+      setCart([]); // SETTING CART TO EMPTY ARRAY
+      setTimeout(() => {
+        setSpinner(false);
+        // setShowPayment(false);
+        setAlertMessage({
+          show: true,
+          message: data.message,
+          color: "darkgreen",
+        });
+      }, 1000);
+    } catch (error) {
+      message.current.style.color = "red";
+      message.current.textContent = "Opps! something went wrong";
+      setTimeout(() => {
+        setSpinner(false);
+        // setShowPayment(false);
+        setAlertMessage({
+          show: false,
+          message: "Opps! something went wrong",
+          color: "red",
+        });
+      }, 500);
+    }
 
-      //clearcart
-      setCart([]);
+    //remember to clear cart
 
-      navigate("/");
-    }, 1000);
+    // setTimeout(() => {
+    //   setSpinner(false);
+
+    //   // add to order local storage
+    //   if (localStorage.getItem("orders")) {
+    //     let oldOrderRecord = JSON.parse(localStorage.getItem("orders"));
+    //     let newOrder = {
+    //       id: userDetails.email,
+    //       totalAmount: totalPrice,
+    //       order: cart,
+    //     };
+    //     let newOrderRecord = [...oldOrderRecord, newOrder];
+    //     localStorage.setItem("orders", JSON.stringify(newOrderRecord));
+    //   } else {
+    //     //set orders storage in localstorage
+    //     let newOrder = {
+    //       id: userDetails.email,
+    //       totalAmount: totalPrice,
+    //       order: cart,
+    //     };
+    //     localStorage.setItem("orders", JSON.stringify([newOrder]));
+    //   }
+
+    //   //clearcart
+    //   setCart([]);
+
+    //   navigate("/");
+    // }, 1000);
+  };
+
+  //PAYLOAD TO SEND TO PAYSTACK
+  let paystackPayload = {
+    email: userDetails.email,
+    amount: totalPrice() * 100,
+    publicKey: PaystackPublicKey, // from config
+    text: "Pay With Card",
+    onSuccess: () => {
+      handlePayment();
+    },
+    onClose: () => {
+      let reply = window.confirm("are you sure, you want to exit?");
+      if (!reply) {
+        return;
+      }
+    },
   };
 
   return (
     <Alert>
       <FormWrapper>
         <Form>
-          <Message className="msg"></Message>
+          <Message ref={message}></Message>
           <InputGroup>
             <Label>Total Amount</Label>
-            <Input type="text" disabled={true} value={`$ ${totalPrice}`} />
+            {/* <Input type="text" disabled={true} value={`${totalPrice}`} /> */}
+            <TotalAmount>&#8358;{`${totalPrice()}`}</TotalAmount>
           </InputGroup>
           <InputGroup>
-            <Label>Card Details</Label>
-            <Input type="text" />
+            <Label>Email</Label>
+            <Input type="text" disabled={true} value={userDetails.email} />
           </InputGroup>
-          <InputGroup>
-            <Label>Card PIN</Label>
-            <Input type="text" />
-          </InputGroup>
+
           <Anchor>
             <p>
               Back to <Link to="/">Home</Link>
             </p>
           </Anchor>
-          <Submit type="submit" onClick={handlePayment}>
-            Pay
-          </Submit>
 
-          <SpinnerStyle id="rotate" />
+          {spinner && <SpinnerStyle />}
         </Form>
+        <PaystackButton className="paystack-button" {...paystackPayload} />
+        <Submit type="submit" name="cash" onClick={handlePayment}>
+          PAY ON DELIVERY
+        </Submit>
       </FormWrapper>
     </Alert>
   );
@@ -87,12 +182,13 @@ export default Payment;
 
 // style for IsSuccessMessage
 const Alert = Styled.div`
-position: fixed;
-top: 0;
-left: 0;
-bottom: 0;
-width: 100%;
- overflow: auto;
+// position: fixed;
+// top: 0;
+// left: 0;
+// bottom: 0;
+// width: 100%;
+height: 600px;
+overflow: auto;
  z-index: 100;
  background-color: rgba(0,0,0,.8)
 `;
@@ -106,7 +202,7 @@ width: 90%;
 max-width: 400px;
 background-color: #fff;
 padding: 20px;
-position: absolute;
+position: relative;
 top: 20px;
 left: 50%;
 transform: translate(-50%, 0%);
@@ -114,7 +210,7 @@ color: #222;
 box-shadow: 0px 0px 10px #999;
 border-radius: 10px;
 font-size: 18px;
-  color: darkred;
+color: darkred;
 
 animation: dropdown;
 animation-duration: .5s;
@@ -139,6 +235,9 @@ border-radius: 5px;
 padding: 5px 10px;
 `;
 
+const TotalAmount = Styled.p`
+color: darkgreen;
+`;
 const InputGroup = Styled.div`
     padding: 5px 0;
     margin: 5px 0;
@@ -178,5 +277,10 @@ const Submit = Styled.button`
     background-color: orange;
     color: #fff;
     font-weight: 900;
-    font-size: 18px;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 20px;
+    
+    letter-spacing: 0.1rem;
+    height: 45px;
 `;

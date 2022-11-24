@@ -1,51 +1,70 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Styled from "styled-components";
 
-//GOODS IMPORTATION
-import { Authenticate } from "../Goods";
+//ContextProvider IMPORTATION
+import { Authenticate } from "../ContextProvider";
+
+import { LoadingPage, FailedPage } from "./shared/LoadingPage";
 
 const Products = () => {
   let { allProducts, addToCart, userDetails } = Authenticate(); // getting products from context provider
 
   let navigate = useNavigate();
 
+  let [pageIsLoading, setPageIsLoading] = useState({
+    loading: true,
+    failed: false,
+    success: false,
+  });
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      setPageIsLoading({
+        loading: false,
+        failed: false,
+        success: true,
+      });
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleAddToCart = (product) => {
     let itemToAddToCart = {
-      id: product.id,
+      id: product._id,
       category: product.category,
       title: product.title,
       price: product.price,
-      image: product.image,
+      image: product.image.data,
       quantity: 0,
     };
     addToCart(itemToAddToCart);
   };
-  return (
+  return pageIsLoading.success ? (
     <ProductSection>
       <ProductTitle>FEATURED PRODUCTS</ProductTitle>
 
       <ProductItems>
         {allProducts.map((product) => (
-          <ProductItem key={product.id}>
+          <ProductItem key={product._id}>
             {userDetails.role === "admin" && (
               <Action>
                 <i
-                  onClick={() => navigate(`/admin/delete/${product.id}`)}
+                  onClick={() => navigate(`/admin/delete/${product._id}`)}
                   className="fa-solid fa-trash delete"
                 ></i>
                 <i
-                  onClick={() => navigate(`/admin/edit/${product.id}`)}
+                  onClick={() => navigate(`/admin/edit/${product._id}`)}
                   className="fa-solid fa-pen-to-square edit"
                 ></i>
               </Action>
             )}
             {!product.inStock && <Soldout>Sold Out</Soldout>}
-            <ProductItemImg src={product.image} alt="product" />
+            <ProductItemImg src={product.image.data} alt="product" />
             <ProductCategory>Category: {product.category}</ProductCategory>
             <ProductItemTitle>Title: {product.title}</ProductItemTitle>
-            <ProductPrice>Price: ${product.price}</ProductPrice>
-            <Link to={`/product/${product.id}`}>View Product</Link>
+            <ProductPrice>Price: &#8358;{product.price}</ProductPrice>
+            <Link to={`/product/${product._id}`}>View Product</Link>
             <AddProduct
               onClick={() => handleAddToCart(product)}
               disabled={!product.inStock}
@@ -56,6 +75,11 @@ const Products = () => {
         ))}
       </ProductItems>
     </ProductSection>
+  ) : (
+    <>
+      {pageIsLoading.loading && <LoadingPage />}
+      {pageIsLoading.failed && <FailedPage />}
+    </>
   );
 };
 
@@ -93,8 +117,6 @@ const ProductItems = Styled.div`
  justify-content: center;
  align-items: center;
  gap: 50px;
- padding: 5px;
-//  column-gap: 8px;
 `;
 
 //style for product ITEM

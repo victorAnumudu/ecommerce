@@ -1,29 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Styled from "styled-components";
 
 import { Link, useNavigate } from "react-router-dom";
 
-import { Authenticate } from "../Goods";
+import { Authenticate } from "../ContextProvider";
 
 import Image from "../assets/checkout/checkout.png";
 
-import Payment from "../components/Payment"; // Payment Component
+// import Payment from "../components/Payment"; // Payment Component
 import AnchorLink from "../components/Link";
 
 const CheckOut = () => {
   let navigate = useNavigate();
-  // setting payment component display
-  let [showPayment, setShowPayment] = useState(false);
 
   let { userDetails, cart, changeItemQty, removeCartItem } = Authenticate();
+
+  // setting payment component display
+  // let [showPayment, setShowPayment] = useState(false);
+
   let handleChangeQty = (e, id) => {
     e.preventDefault();
     let action = e.target.name;
     changeItemQty(id, action);
   };
 
-  //function to get cart item number
+  //function to get cart number of items
   let cartNumber = () => {
     let numberOfItem = cart.reduce((sum, item) => {
       return sum + item.quantity;
@@ -50,7 +52,8 @@ const CheckOut = () => {
       navigate("/login");
       return;
     }
-    setShowPayment(true);
+    navigate("/payment");
+    // setShowPayment(true);
   };
 
   return (
@@ -67,20 +70,13 @@ const CheckOut = () => {
         <CartDetail>
           <AnchorLink />
           <h1>Shopping Cart</h1>
-          {/* <SubTotal>
-            <p>
-              Subtotal ({`${cartNumber()} item${cartNumber() > 1 ? "s" : ""}`})
-            </p>
-            <p>${totalPrice()}</p>
-          </SubTotal> */}
-
           <Items>
             <SubTotal>
               <p>
                 Subtotal ({`${cartNumber()} item${cartNumber() > 1 ? "s" : ""}`}
                 )
               </p>
-              <p>${totalPrice()}</p>
+              <p>&#8358;{totalPrice()}</p>
             </SubTotal>
             {cart.map((item) => (
               <Item key={item.id}>
@@ -104,11 +100,11 @@ const CheckOut = () => {
                 </Qty>
                 <Price>
                   <p>Unit Price</p>
-                  <p>${item.price}</p>
+                  <p>&#8358;{item.price}</p>
                 </Price>
                 <Price>
                   <p>Total Price</p>
-                  <p>${item.price * item.quantity}</p>
+                  <p>&#8358;{item.price * item.quantity}</p>
                 </Price>
                 <DeleteBtn title="Delete Item">
                   <i
@@ -122,7 +118,7 @@ const CheckOut = () => {
           <CheckoutBtn onClick={proceedToPayment}>Check Out</CheckoutBtn>
         </CartDetail>
       )}
-      {showPayment && <Payment totalPrice={totalPrice()} cart={cart} />}
+      {/* {showPayment && <Payment totalPrice={totalPrice()} cart={cart} setShowPayment={setShowPayment}/>} */}
     </PageContainer>
   );
 };

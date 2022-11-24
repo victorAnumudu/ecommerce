@@ -1,12 +1,13 @@
+import React from "react";
 import Styled from "styled-components";
 
 import GlobalStyle from "./styles/GlobalStyle"; // Global Style Importation
 
 import { ThemeProvider } from "styled-components";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import { Authenticate } from "./Goods";
+import { Authenticate } from "./ContextProvider";
 
 import AlertMessage from "./components/shared/AlertMessage"; // Alert Message
 
@@ -20,6 +21,8 @@ import ProductPage from "./pages/ProductPage";
 import Footer from "./components/Footer";
 import UserOrders from "./pages/UserOrders";
 import EditProfile from "./pages/EditProfile";
+import PageNotFound from "./pages/PageNotFound";
+import Payment from "./components/Payment";
 
 //ADMIN PAGES/ROUTES
 import AdminAddProduct from "./pages/AdminAddProduct";
@@ -33,7 +36,7 @@ let theme = {
 };
 
 function App() {
-  let { alertMessage, userDetails, allProducts } = Authenticate();
+  let { alertMessage, userDetails } = Authenticate();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -45,25 +48,21 @@ function App() {
           <Route path="/signup" element={<Register />} />
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/product/:product_id" element={<ProductPage />} />
-          {userDetails.isLoggedIn && (
-            <>
-              <Route path="/user/orders" element={<UserOrders />} />
-              <Route path="/user/profile/:user_id" element={<EditProfile />} />
+          <Route path="/user/profile/" element={userDetails.isLoggedIn ? <EditProfile /> : <Navigate to = '/login' />} />
+          <Route path="/user/orders" element={userDetails.isLoggedIn ? <UserOrders /> : <Navigate to = '/login' />} />
+          <Route path="/payment" element={userDetails.isLoggedIn ? <Payment /> : <Navigate to = '/checkout' />} />
 
-              <Route path="/admin/post/product" element={<AdminAddProduct />} />
-              <Route path="/admin/edit/:pid" element={<AdminEditProduct />} />
-              <Route
-                path="/admin/delete/:pid"
-                element={<AdminDeleteProduct />}
-              />
-              <Route path="/admin/view/orders" element={<AdminViewOrders />} />
-            </>
-          )}
+          {/* ADMIN ROUTES */}
+          <Route path="/admin/add/product" element={userDetails.isLoggedIn && userDetails.role ==='admin' ? <AdminAddProduct /> : <Navigate to = '/login' />} />
+          <Route path="/admin/edit/:pid" element={userDetails.isLoggedIn && userDetails.role ==='admin' ? <AdminEditProduct /> : <Navigate to = '/login' />} />
+          <Route path="/admin/delete/:pid" element={userDetails.isLoggedIn && userDetails.role ==='admin' ? <AdminDeleteProduct /> : <Navigate to = '/login' />} />
+          <Route path="/admin/view/orders" element={userDetails.isLoggedIn && userDetails.role ==='admin' ? <AdminViewOrders /> : <Navigate to = '/login' />} />
 
-          <Route path="*" element={<Home />} />
+          {/* ANY UNSPECIFIED ROUTES */}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
         <Footer />
-        {alertMessage && <AlertMessage display={alertMessage} />}
+        {alertMessage.show && <AlertMessage message={alertMessage.message} color={alertMessage.color} />}
       </AppDiv>
     </ThemeProvider>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 
 import Styled from "styled-components";
 
@@ -6,31 +6,39 @@ import { Link } from "react-router-dom";
 
 import Image from "../assets/checkout/checkout.png";
 
-import { Authenticate } from "../Goods";
+import { Authenticate } from "../ContextProvider";
 
 import AnchorLink from "../components/Link";
+import apiUrl from "../config";
 
 const UserOrders = () => {
   let { userDetails } = Authenticate();
+
   // setting orders from localstorage orders
   let [orders, setOrders] = useState([]);
 
-  useEffect(() => {
-    let ordersRecord = JSON.parse(localStorage.getItem("orders"));
-    let userOrders = ordersRecord.filter(
-      (item) => item.id == userDetails.email
-    );
-    setOrders(userOrders);
-  }, []);
+  // useEffect(() => {
+  //   let ordersRecord = JSON.parse(localStorage.getItem("orders"));
+  //   let userOrders = ordersRecord.filter(
+  //     (item) => item.id === userDetails.email
+  //   );
+  //   setOrders(userOrders);
+  // }, [userDetails.email]);
 
-  //function to calculate the total amount for each order
-  let totalAmount = () => {
-    let total = 0;
-    orders.map((item) =>
-      item.order.map((order) => (total += order.quantity * order.price))
-    );
-    return total;
-  };
+  useEffect(() => {
+    fetch(`${apiUrl}/user/view/orders`, {
+      method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.message);
+        setOrders(data.message);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <PageContainer>
@@ -51,13 +59,19 @@ const UserOrders = () => {
               <Order key={index}>
                 <TitleHeader>
                   <TitleDetails>
-                    Date: <p>2022/11/11</p>
+                    Date and Time of Order: <p>{item.createdAt}</p>
                   </TitleDetails>
                   <TitleDetails>
-                    Total Amount of Order: <p>${item.totalAmount}</p>
+                    Total Amount of Order: <p>${item.total_amount}</p>
+                  </TitleDetails>
+                  <TitleDetails>
+                    Payment Status: <p>{item.payment_status}</p>
+                  </TitleDetails>
+                  <TitleDetails>
+                    Delivery Status: <p>{item.isDelivered.toString()}</p>
                   </TitleDetails>
                 </TitleHeader>
-                {item.order.map((order, index) => (
+                {item.items.map((order, index) => (
                   <Item key={index}>
                     <img src={order.image} alt="Item Logo" />
                     <h2>{order.title}</h2>
@@ -163,10 +177,10 @@ padding: 0 5px;
 //order header title
 const TitleHeader = Styled.div`
 padding: 10px 0;
-display:flex;
-justify-content: center;
-flex-wrap: wrap;
-gap: 50px;
+// display:flex;
+// justify-content: center;
+// flex-wrap: wrap;
+// gap: 50px;
 `;
 
 //Style for Date element
@@ -182,7 +196,7 @@ padding: 10px 0;
 const Item = Styled.div`
 // display: flex;
 display: grid;
-grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 align-items: center;
 padding: 10px 0;
 

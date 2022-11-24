@@ -7,7 +7,7 @@ import Logo from "../assets/logo.svg"; // Nav Bar Logo
 import NavLink from "./Navbar/NavLink"; // Nav Link
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { Authenticate } from "../Goods"; // context provider importation
+import { Authenticate } from "../ContextProvider"; // context provider importation
 
 // FUNCTION NAV COMPONENT
 const Navbar = () => {
@@ -48,6 +48,9 @@ const Navbar = () => {
 
   //function to handle when user clicks on check out BTN
   const handleCheckout = () => {
+    if (toggleMenu) {
+      onToggleMenu();
+    }
     navigate("/checkout");
   };
   return (
@@ -71,12 +74,28 @@ const Navbar = () => {
               <i className="fa-solid fa-caret-down arrow-down"></i>
             </p>
             <ul>
-              <NavLink path="/user/orders" name="Orders History" />
-              <NavLink path="/user/profile/1" name="Edit Profile" />
+              <NavLink
+                path="/user/orders"
+                name="Orders History"
+                onclick={onLinkClick}
+              />
+              <NavLink
+                path="/user/profile/"
+                name="Edit Profile"
+                onclick={onLinkClick}
+              />
               {userDetails.role === "admin" && (
                 <>
-                  <NavLink path="/admin/post/product" name="Add Product" />
-                  <NavLink path="/admin/view/orders" name="All Order History" />
+                  <NavLink
+                    path="/admin/add/product"
+                    name="Add Product"
+                    onclick={onLinkClick}
+                  />
+                  <NavLink
+                    path="/admin/view/orders"
+                    name="All Order History"
+                    onclick={onLinkClick}
+                  />
                 </>
               )}
             </ul>

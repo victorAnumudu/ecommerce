@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import apiUrl from "./config"; // BACKEND API LINK
+
 import Shoe1 from "./assets/goods/shoe1.webp";
 import Shoe2 from "./assets/goods/shoe2.webp";
 import Shoe3 from "./assets/goods/shoe3.webp";
@@ -287,46 +289,92 @@ export const AuthProvider = (props) => {
 
   let [allProducts, setAllProducts] = useState([]);
 
-  let [alertMessage, setAlertMessage] = useState(false);
+  let [alertMessage, setAlertMessage] = useState({
+    show: false,
+    message: "",
+    color: "red",
+  });
 
   let [cart, setCart] = useState([]); // shopping cart details
+
+  let [loadUser, setLoadUser] = useState(false);
 
   // active user details
   let [userDetails, setUserDetails] = useState({
     isLoggedIn: false,
-    name: "Anumudu",
-    email: "anumuduchukwuebuka@gmail.com",
-    role: "user",
+    name: "",
+    email: "",
+    role: "",
   });
+  //set the initial value of USER DETAILS
+  useEffect(() => {
+    let getUserInfo = async () => {
+      try {
+        let res = await fetch(`${apiUrl}/user/info`, {
+          method: "GET",
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        });
+        const data = await res.json();
+        if (data.message) {
+          data.message.isLoggedIn = true;
+          setUserDetails((prev) => {
+            return { ...prev, ...data.message };
+          });
+        }
+      } catch (error) {
+        return;
+      }
+    };
+    if (!userDetails.isLoggedIn && localStorage.getItem("token")) {
+      getUserInfo();
+    }
+  }, [loadUser]);
 
-  //Updating user info
-  let handleUserDetails = (details) => {
-    setUserDetails(details);
-  };
+  //Updating user info NOT IN USE FOR NOW
+  // let handleUserDetails = (details) => {
+  //   setUserDetails(details);
+  // };
 
   //function to handle logging user in
-  const logInUser = (path) => {
-    setUserDetails({
-      isLoggedIn: true,
-      name: "Anumudu",
-      email: "anumuduchukwuebuka@gmail.com",
-      role: "user",
-    });
+  const logInUser = () => {
+    setLoadUser(true);
     navigate("/");
   };
   const logOutUser = () => {
+    setLoadUser(false);
     setUserDetails({
       isLoggedIn: false,
-      name: "Anumudu",
+      name: "",
       email: "",
       role: "",
     });
+    localStorage.removeItem("token");
     navigate("/");
   };
 
   //set the initial value of ALL PRODUCT
   useEffect(() => {
-    setAllProducts(Goods);
+    // setAllProducts(Goods);
+    let getProduct = async () => {
+      try {
+        let res = await fetch(`${apiUrl}/product`, {
+          method: "GET",
+          headers: {
+            "content-type": "application/json",
+          },
+        });
+        let data = await res.json();
+        if (!data.status) {
+          setAllProducts([]);
+        }
+        setAllProducts([...data.message]);
+      } catch (error) {
+        setAllProducts([]);
+      }
+    };
+    getProduct();
   }, []);
 
   // function to filter ALL PRODUCTS by CATEGORY
@@ -341,7 +389,7 @@ export const AuthProvider = (props) => {
 
   // function to DELETE A PRODUCTS by ID
   let handleDeleteProduct = (id) => {
-    setAllProducts((prev) => prev.filter((product) => product.id != id));
+    setAllProducts((prev) => prev.filter((product) => product.id !== id));
     navigate("/");
   };
 
@@ -349,7 +397,7 @@ export const AuthProvider = (props) => {
   let handleEditProduct = (productToUpdate) => {
     setAllProducts((prev) =>
       prev.map((product) => {
-        if (product.id == productToUpdate.id) {
+        if (product.id === productToUpdate.id) {
           return { ...product, ...productToUpdate };
         } else {
           return product;
@@ -365,7 +413,11 @@ export const AuthProvider = (props) => {
     let newCart; // variable to hold the value to be assigned to SET CART
     let itemExist = cart.find((item) => item.id === newItem.id);
     if (itemExist) {
-      setAlertMessage(true);
+      setAlertMessage({
+        show: true,
+        message: "Opps! Item Already in Cart",
+        color: "red",
+      });
     } else {
       newCart = [...cart, { ...newItem, quantity: 1 }];
       setCart(newCart);
@@ -413,7 +465,6 @@ export const AuthProvider = (props) => {
     alertMessage,
     setAlertMessage,
     userDetails,
-    handleUserDetails,
     logInUser,
     logOutUser,
   };
