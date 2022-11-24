@@ -52,7 +52,7 @@ const Login = () => {
     e.preventDefault();
     setSpinner(true);
     try {
-      let res = await fetch(`${apiUrl}/auth/login`, {
+      let res = await fetch(`https://ecommerce-9dlc.onrender.com/auth/login`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
