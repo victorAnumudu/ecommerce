@@ -1,5 +1,5 @@
 const config = () => {
-  let apiUrl = "https://ecommerce-9dlc.onrender.com/api";
+  let apiUrl = "https://ecommerce-9dlc.onrender.com";
   return apiUrl;
 };
 export default config();
