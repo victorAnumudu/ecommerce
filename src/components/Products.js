@@ -19,6 +19,11 @@ const Products = () => {
   });
 
   useEffect(() => {
+    setPageIsLoading({
+      loading: true,
+      failed: false,
+      success: false,
+    })
     let timer = setTimeout(() => {
       setPageIsLoading({
         loading: false,
@@ -27,7 +32,7 @@ const Products = () => {
       });
     }, 1500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [allProducts]);
 
   const handleAddToCart = (product) => {
     let itemToAddToCart = {
