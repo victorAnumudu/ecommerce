@@ -379,12 +379,13 @@ export const AuthProvider = (props) => {
 
   // function to filter ALL PRODUCTS by CATEGORY
   let handleFilterProduct = (name) => {
-    let products = Goods;
-    setAllProducts(() =>
-      products.filter((product) =>
-        name === "all" ? product : product.category.toLowerCase() === name
-      )
-    );
+    // let products = Goods;
+    // setAllProducts(() =>
+    //   products.filter((product) =>
+    //     name === "all" ? product : product.category.toLowerCase() === name
+    //   )
+    // );
+    return
   };
 
   // function to DELETE A PRODUCTS by ID
