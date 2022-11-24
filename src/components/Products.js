@@ -41,40 +41,50 @@ const Products = () => {
     addToCart(itemToAddToCart);
   };
   return pageIsLoading.success ? (
-    <ProductSection>
-      <ProductTitle>FEATURED PRODUCTS</ProductTitle>
+    allProducts.length == 0 ? (
+      <ProductSection>
+        <ProductTitle>FEATURED PRODUCTS</ProductTitle>
 
-      <ProductItems>
-        {allProducts.map((product) => (
-          <ProductItem key={product._id}>
-            {userDetails.role === "admin" && (
-              <Action>
-                <i
-                  onClick={() => navigate(`/admin/delete/${product._id}`)}
-                  className="fa-solid fa-trash delete"
-                ></i>
-                <i
-                  onClick={() => navigate(`/admin/edit/${product._id}`)}
-                  className="fa-solid fa-pen-to-square edit"
-                ></i>
-              </Action>
-            )}
-            {!product.inStock && <Soldout>Sold Out</Soldout>}
-            <ProductItemImg src={product.image.data} alt="product" />
-            <ProductCategory>Category: {product.category}</ProductCategory>
-            <ProductItemTitle>Title: {product.title}</ProductItemTitle>
-            <ProductPrice>Price: &#8358;{product.price}</ProductPrice>
-            <Link to={`/product/${product._id}`}>View Product</Link>
-            <AddProduct
-              onClick={() => handleAddToCart(product)}
-              disabled={!product.inStock}
-            >
-              Add to Cart
-            </AddProduct>
-          </ProductItem>
-        ))}
-      </ProductItems>
-    </ProductSection>
+        <ProductItems>
+          <p>Opps! No Item found</p>
+        </ProductItems>
+      </ProductSection>
+    ) : (
+      <ProductSection>
+        <ProductTitle>FEATURED PRODUCTS</ProductTitle>
+
+        <ProductItems>
+          {allProducts.map((product) => (
+            <ProductItem key={product._id}>
+              {userDetails.role === "admin" && (
+                <Action>
+                  <i
+                    onClick={() => navigate(`/admin/delete/${product._id}`)}
+                    className="fa-solid fa-trash delete"
+                  ></i>
+                  <i
+                    onClick={() => navigate(`/admin/edit/${product._id}`)}
+                    className="fa-solid fa-pen-to-square edit"
+                  ></i>
+                </Action>
+              )}
+              {!product.inStock && <Soldout>Sold Out</Soldout>}
+              <ProductItemImg src={product.image.data} alt="product" />
+              <ProductCategory>Category: {product.category}</ProductCategory>
+              <ProductItemTitle>Title: {product.title}</ProductItemTitle>
+              <ProductPrice>Price: &#8358;{product.price}</ProductPrice>
+              <Link to={`/product/${product._id}`}>View Product</Link>
+              <AddProduct
+                onClick={() => handleAddToCart(product)}
+                disabled={!product.inStock}
+              >
+                Add to Cart
+              </AddProduct>
+            </ProductItem>
+          ))}
+        </ProductItems>
+      </ProductSection>
+    )
   ) : (
     <>
       {pageIsLoading.loading && <LoadingPage />}

@@ -378,14 +378,34 @@ export const AuthProvider = (props) => {
   }, []);
 
   // function to filter ALL PRODUCTS by CATEGORY
-  let handleFilterProduct = (name) => {
+  let handleFilterProduct = async (name) => {
+    //make a request to server, then filter
+      try {
+        let res = await fetch(`${apiUrl}/product`, {
+          method: "GET",
+          headers: {
+            "content-type": "application/json",
+          },
+        });
+        let data = await res.json();
+        if (!data.status) {
+          setAllProducts([]);
+        }
+        setAllProducts(() =>
+        data.message.filter((product) =>
+        name === "all" ? product : product.category.toLowerCase() === name
+      )
+    );
+      } catch (error) {
+        setAllProducts([]);
+      }
+
     // let products = Goods;
     // setAllProducts(() =>
     //   products.filter((product) =>
     //     name === "all" ? product : product.category.toLowerCase() === name
     //   )
     // );
-    return
   };
 
   // function to DELETE A PRODUCTS by ID
