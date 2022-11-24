@@ -62,7 +62,7 @@ const UserOrders = () => {
                     Date and Time of Order: <p>{item.createdAt}</p>
                   </TitleDetails>
                   <TitleDetails>
-                    Total Amount of Order: <p>${item.total_amount}</p>
+                    Total Amount of Order: <p>&#8358;{item.total_amount}</p>
                   </TitleDetails>
                   <TitleDetails>
                     Payment Status: <p>{item.payment_status}</p>
@@ -81,11 +81,11 @@ const UserOrders = () => {
                     </Qty>
                     <Price>
                       <p>Unit Price</p>
-                      <p>${order.price}</p>
+                      <p>&#8358;{order.price}</p>
                     </Price>
                     <Price>
                       <p>Total Price</p>
-                      <p>${order.price * order.quantity}</p>
+                      <p>&#8358;{order.price * order.quantity}</p>
                     </Price>
                   </Item>
                 ))}
