@@ -1,14 +1,12 @@
 {
   "files": {
     "main.css": "/static/css/main.57803b0d.css",
-    "main.js": "/static/js/main.3cffea0e.js",
+    "main.js": "/static/js/main.7b01e507.js",
     "static/js/787.dcc73137.chunk.js": "/static/js/787.dcc73137.chunk.js",
     "static/media/bg.jpg": "/static/media/bg.79a1e84a8dd53362df63.jpg",
     "static/media/hero2.jpg": "/static/media/hero2.80d80a778f56f78221df.jpg",
     "static/media/ecommerce.jpg": "/static/media/ecommerce.58439ad82aecd8b254c4.jpg",
     "static/media/slide2.jpg": "/static/media/slide2.592c048a4ce650fe3575.jpg",
-    "static/media/glass2.jpg": "/static/media/glass2.9c9ed69013e5aa4e6b17.jpg",
-    "static/media/glass1.jpg": "/static/media/glass1.85bbd7d09a23381a12d5.jpg",
     "static/media/slide4.jpg": "/static/media/slide4.e2274ac09da73d7af9dd.jpg",
     "static/media/login.jpg": "/static/media/login.ad4a3c7ca537016a8d63.jpg",
     "static/media/hero3.jpg": "/static/media/hero3.60b80ec2f77c6f4ea948.jpg",
@@ -17,34 +15,14 @@
     "static/media/hero1.jpg": "/static/media/hero1.65fdee74f8bf0e182ac2.jpg",
     "static/media/electronics1.jpg": "/static/media/electronics1.d20985e3f8daedac6833.jpg",
     "static/media/checkout.png": "/static/media/checkout.b074406b2114cb08f8df.png",
-    "static/media/cloth2.jpg": "/static/media/cloth2.8f77d74e7f4a0123467d.jpg",
-    "static/media/shoe2.webp": "/static/media/shoe2.1add43e327e40ed3f06d.webp",
-    "static/media/watch3.webp": "/static/media/watch3.66b1bbfcad107efdb5bd.webp",
-    "static/media/cloth1.webp": "/static/media/cloth1.2fbfc6e4f6149f87775e.webp",
-    "static/media/cloth3.webp": "/static/media/cloth3.2fd1d42b1ffd5cddf318.webp",
-    "static/media/watch2.webp": "/static/media/watch2.78bbf92d760b14b2ab73.webp",
-    "static/media/shoe5.webp": "/static/media/shoe5.a3926e8571880d1c31db.webp",
-    "static/media/cloth5.webp": "/static/media/cloth5.835733f66b1b5e93e52c.webp",
-    "static/media/watch5.webp": "/static/media/watch5.0ae4f434fd40ddb0ea5d.webp",
-    "static/media/shoe4.webp": "/static/media/shoe4.c9f9fd8cd6549a1fc98e.webp",
-    "static/media/watch4.webp": "/static/media/watch4.9b470939f80220602477.webp",
-    "static/media/shoe3.webp": "/static/media/shoe3.f82768d07cc3b34a1f64.webp",
-    "static/media/cloth4.webp": "/static/media/cloth4.650e63d9a6161f5cc1c5.webp",
-    "static/media/electronics4.webp": "/static/media/electronics4.d0cb3f5889f601dc078d.webp",
-    "static/media/electronics3.webp": "/static/media/electronics3.2b2e3a86ebcbe7837f08.webp",
-    "static/media/electronics2.webp": "/static/media/electronics2.52d2147fb22b957f09a1.webp",
-    "static/media/watch1.webp": "/static/media/watch1.aec5b7255cd8bea231f6.webp",
-    "static/media/electronics5.webp": "/static/media/electronics5.97efc533e4b1767254b9.webp",
-    "static/media/shoe1.webp": "/static/media/shoe1.935d13f4ddec6eb58d01.webp",
-    "static/media/electronics1.webp": "/static/media/electronics1.8da670aad1795ad422c3.webp",
     "static/media/logo.svg": "/static/media/logo.c7cc2ccb44dfbe0668ad9e634b65f0ed.svg",
     "index.html": "/index.html",
     "main.57803b0d.css.map": "/static/css/main.57803b0d.css.map",
-    "main.3cffea0e.js.map": "/static/js/main.3cffea0e.js.map",
+    "main.7b01e507.js.map": "/static/js/main.7b01e507.js.map",
     "787.dcc73137.chunk.js.map": "/static/js/787.dcc73137.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.57803b0d.css",
-    "static/js/main.3cffea0e.js"
+    "static/js/main.7b01e507.js"
   ]
 }
