@@ -19,6 +19,7 @@ const Footer = () => {
       message: "Please input a valid Email",
       color: "red",
     });
+    return
     }
     setAlertMessage({
       show: true,
