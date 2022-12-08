@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Styles from "styled-components";
 
 import FooterLogo from "../assets/logo.svg";
+import { Authenticate } from "../ContextProvider";
 
 const Footer = () => {
+  let [input, setInput] = useState("");
+  let { setAlertMessage } = Authenticate();
+
+  const subscribe = () => {
+    //valid email
+    let regEx = /^[^0-9][a-zA-Z0-9._%+-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/;
+    let email = input
+    if(!email || regEx.test(email) == false){
+      setAlertMessage({
+      show: true,
+      message: "Please input a valid Email",
+      color: "red",
+    });
+    }
+    setAlertMessage({
+      show: true,
+      message: "You have successfully subscribed",
+      color: "green",
+    });
+    setInput('')
+  };
   return (
     <FooterElement>
       <FooterFlex>
@@ -18,8 +40,8 @@ const Footer = () => {
         </Footerleft>
         <FooterRight>
           <Subscribe>Subscribe</Subscribe>
-          <Submit>&#62;</Submit>
-          <Input type="text" placeholder="Enter your email" />
+          <Submit onClick={subscribe}>&#62;</Submit>
+          <Input type="text" placeholder="Enter your email" value={input} onChange={(e)=>setInput(e.target.value)}/>
         </FooterRight>
       </FooterFlex>
 

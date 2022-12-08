@@ -34,7 +34,6 @@ const UserOrders = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.message);
         setOrders(data.message);
       })
       .catch((err) => console.log(err));

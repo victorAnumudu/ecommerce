@@ -17,7 +17,7 @@ const AlertMessage = ({ message, color }) => {
   };
   return (
     <Alert>
-      <Message>
+      <Message color={color}>
         {message}
         <Link to="/" onClick={removeAlertDisplay}>
           Back

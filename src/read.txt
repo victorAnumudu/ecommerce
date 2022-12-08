@@ -13,3 +13,5 @@ change where shop now takes one to
 clean all useeffect ooooo (e pepper me too much)
 
 view orders as table and be able to view each order seperately
+
+reverse the product array to show products from the last added
